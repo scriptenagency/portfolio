@@ -50,6 +50,11 @@ let bg_cameraShots = [], bg_currentShotIndex = 0;
 let bg_cloudParticles, bg_windowsTextureCanvas, bg_cloudTextureCanvas;
 let bg_hBlurPass, bg_vBlurPass;
 
+// PERFORMANCE OPTIMIZATIONS
+const buildingCount = bg_isMobile ? 80 : 150;
+const particleCount = bg_isMobile ? 80 : 120;
+
+
 function bg_init() {
     if (typeof THREE === 'undefined') {
         document.getElementById('loadingOverlay').innerHTML = 'Error: Could not load 3D library.';
@@ -131,9 +136,9 @@ function bg_defineCameraShots() { const charHeadPos = new THREE.Vector3(-1.5, 2.
 function bg_playShot(shotIndex) { const shot = bg_cameraShots[shotIndex]; const duration = 8000; bg_camera.position.copy(shot.startPos); const currentTarget = new THREE.Vector3().copy(shot.startTarget); bg_camera.lookAt(currentTarget); bg_camera.rotation.z = shot.dutchAngle || 0; new TWEEN.Tween(bg_camera.position).to(shot.endPos, duration).easing(TWEEN.Easing.Quadratic.InOut).start(); new TWEEN.Tween(currentTarget).to(shot.endTarget, duration).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(() => { bg_camera.lookAt(currentTarget); }).onComplete(() => { bg_transitionToNextShot(); }).start(); }
 function bg_transitionToNextShot() { const transitionOverlay = document.getElementById('transitionOverlay'); new TWEEN.Tween({ opacity: 0 }).to({ opacity: 1 }, 500).easing(TWEEN.Easing.Quadratic.Out).onUpdate((obj) => { transitionOverlay.style.opacity = obj.opacity; }).onComplete(() => { bg_currentShotIndex = (bg_currentShotIndex + 1) % bg_cameraShots.length; bg_playShot(bg_currentShotIndex); new TWEEN.Tween({ opacity: 1 }).to({ opacity: 0 }, 500).easing(TWEEN.Easing.Quadratic.In).onUpdate((obj) => { transitionOverlay.style.opacity = obj.opacity; }).start(); }).start(); }
 function bg_createWindowsTexture(themeColor) { bg_windowsTextureCanvas = document.createElement('canvas'); bg_windowsTextureCanvas.width = 128; bg_windowsTextureCanvas.height = 256; const context = bg_windowsTextureCanvas.getContext('2d'); context.fillStyle = '#111'; context.fillRect(0, 0, 128, 256); for (let y = 8; y < 256; y += 16) { for (let x = 8; x < 128; x += 16) { if (Math.random() > 0.9) { context.fillStyle = themeColor; } else if (Math.random() > 0.8) { context.fillStyle = new THREE.Color(themeColor).lerp(new THREE.Color(0x000000), 0.5).getStyle(); } else { context.fillStyle = '#333'; } context.fillRect(x, y, 8, 8); } } return new THREE.CanvasTexture(bg_windowsTextureCanvas); }
-function bg_createCityscape() { const cityGroup = new THREE.Group(); bg_scene.add(cityGroup); const buildingMaterials = [new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) }), new THREE.MeshStandardMaterial({ color: 0x202020, roughness: 0.9, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) }), new THREE.MeshStandardMaterial({ color: 0x101010, roughness: 0.7, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) })]; const buildingCount = 200; const cityRadius = 50; for (let i = 0; i < buildingCount; i++) { const building = new THREE.Group(); const height = Math.random() * 40 + 10; const width = Math.random() * 5 + 2; const depth = Math.random() * 5 + 2; const mainBlock = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), buildingMaterials[i % 3]); building.add(mainBlock); if (Math.random() > 0.7) { const topHeight = Math.random() * 10 + 5; const topBlock = new THREE.Mesh(new THREE.BoxGeometry(width * 0.8, topHeight, depth * 0.8), buildingMaterials[i % 3]); topBlock.position.y = (height + topHeight) / 2; building.add(topBlock); } const angle = Math.random() * Math.PI * 2; const distance = cityRadius + Math.random() * 40; building.position.set(Math.cos(angle) * distance, 0, Math.sin(angle) * distance); cityGroup.add(building); } }
+function bg_createCityscape() { const cityGroup = new THREE.Group(); bg_scene.add(cityGroup); const buildingMaterials = [new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) }), new THREE.MeshStandardMaterial({ color: 0x202020, roughness: 0.9, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) }), new THREE.MeshStandardMaterial({ color: 0x101010, roughness: 0.7, map: bg_createWindowsTexture(themes.red.mainNeon.getStyle()) })]; const cityRadius = 50; for (let i = 0; i < buildingCount; i++) { const building = new THREE.Group(); const height = Math.random() * 40 + 10; const width = Math.random() * 5 + 2; const depth = Math.random() * 5 + 2; const mainBlock = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), buildingMaterials[i % 3]); building.add(mainBlock); if (Math.random() > 0.7) { const topHeight = Math.random() * 10 + 5; const topBlock = new THREE.Mesh(new THREE.BoxGeometry(width * 0.8, topHeight, depth * 0.8), buildingMaterials[i % 3]); topBlock.position.y = (height + topHeight) / 2; building.add(topBlock); } const angle = Math.random() * Math.PI * 2; const distance = cityRadius + Math.random() * 40; building.position.set(Math.cos(angle) * distance, 0, Math.sin(angle) * distance); cityGroup.add(building); } }
 function bg_createCloudTexture(color) { bg_cloudTextureCanvas = document.createElement('canvas'); bg_cloudTextureCanvas.width = 128; bg_cloudTextureCanvas.height = 128; const context = bg_cloudTextureCanvas.getContext('2d'); const gradient = context.createRadialGradient(bg_cloudTextureCanvas.width / 2, bg_cloudTextureCanvas.height / 2, 0, bg_cloudTextureCanvas.width / 2, bg_cloudTextureCanvas.height / 2, bg_cloudTextureCanvas.width / 2); gradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.8)`); gradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`); context.fillStyle = gradient; context.fillRect(0, 0, bg_cloudTextureCanvas.width, bg_cloudTextureCanvas.height); return new THREE.CanvasTexture(bg_cloudTextureCanvas); }
-function bg_createClouds() { const particleCount = 200; const particlesGeometry = new THREE.BufferGeometry(); const positions = []; const velocities = []; for (let i = 0; i < particleCount; i++) { const x = (Math.random() - 0.5) * 200; const y = 20 + Math.random() * 10; const z = (Math.random() - 0.5) * 200; positions.push(x, y, z); velocities.push((Math.random() - 0.5) * 0.05, 0, (Math.random() - 0.5) * 0.05); } particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); particlesGeometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3)); const particlesMaterial = new THREE.PointsMaterial({ size: 80, map: bg_createCloudTexture(themes.red.cloud), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.2 }); bg_cloudParticles = new THREE.Points(particlesGeometry, particlesMaterial); bg_scene.add(bg_cloudParticles); }
+function bg_createClouds() { const particlesGeometry = new THREE.BufferGeometry(); const positions = []; const velocities = []; for (let i = 0; i < particleCount; i++) { const x = (Math.random() - 0.5) * 200; const y = 20 + Math.random() * 10; const z = (Math.random() - 0.5) * 200; positions.push(x, y, z); velocities.push((Math.random() - 0.5) * 0.05, 0, (Math.random() - 0.5) * 0.05); } particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); particlesGeometry.setAttribute('velocity', new THREE.Float32BufferAttribute(velocities, 3)); const particlesMaterial = new THREE.PointsMaterial({ size: 80, map: bg_createCloudTexture(themes.red.cloud), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.2 }); bg_cloudParticles = new THREE.Points(particlesGeometry, particlesMaterial); bg_scene.add(bg_cloudParticles); }
 function bg_onWindowResize() { 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -155,7 +160,7 @@ function initCarousel() {
     if (bg_isMobile) {
         document.getElementById('cursor-container').style.display = 'none';
         document.body.style.cursor = 'auto';
-        document.querySelectorAll('.btn, .swiper-button-next, .swiper-button-prev, .social-icon-wrapper, .play-button-v2').forEach(el => el.style.cursor = 'pointer');
+        document.querySelectorAll('.btn, .swiper-button-next, .swiper-button-prev, .social-icon-wrapper, .play-button-v2, .popup-close-btn').forEach(el => el.style.cursor = 'pointer');
     }
 
     const webglScene = new THREE.Scene();
@@ -301,7 +306,7 @@ function initCarousel() {
         tl.to(carouselUIGroup.scale, { x: 0.5, y: 0.5, z: 0.5, duration: 0.4, ease: 'power2.in' })
           .add(() => { carouselUIGroup.visible = false; }, "-=0.1")
           .add(() => { htmlPopupOverlay.classList.add('visible'); })
-          .to(newPopup, { scale: 0.8, opacity: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2");
+          .to(newPopup, { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2"); // Changed scale to 1 for mobile fix
     }
 
     function hidePopup() {
@@ -447,7 +452,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/1-urban-festival.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/1-urban-festival.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -458,7 +463,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/2-speculative-ad.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/2-speculative-ad.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -469,7 +474,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/3-natures-yum-1.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/3-natures-yum-1.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -480,7 +485,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/4-uf-le-blanco.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/4-uf-le-blanco.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -491,7 +496,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/5-deadline-radio.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/5-deadline-radio.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -502,7 +507,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/6-undercover-battle.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/6-undercover-battle.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -513,7 +518,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/7-natures-yum-2.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/7-natures-yum-2.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -524,7 +529,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="assets/audio/8-bama-trailride.mp3" preload="auto"></audio>
+                            <audio class="demo-audio" src="assets/audio/8-bama-trailride.mp3" preload="none"></audio>
                         </div>
                     </div>
                 </div>
@@ -728,7 +733,6 @@ function initCarousel() {
     function transformToCarousel() {
         if (isAnimating) return;
         transitionTheme(true);
-        // BG music code removed
         isAnimating = true; isInitialState = false; clearTimeout(scriptenInactivityTimer);
         const w = 2.2 / 4;
         transitionRects[0].position.set(-w, w, 0); transitionRects[1].position.set(w, w, 0); transitionRects[2].position.set(-w, -w, 0); transitionRects[3].position.set(w, -w, 0);
@@ -758,7 +762,6 @@ function initCarousel() {
     function transformToInitial() {
         if (isAnimating || currentPopupName) return;
         transitionTheme(false); 
-        // BG music code removed
         isAnimating = true; isInitialState = true; clearTimeout(inactivityTimer);
         currentIndex = 0; flatCarouselParent.rotation.y = 0; updateCarouselOpacities(); 
         carouselElements.forEach((el, i) => { const rect = transitionRects[i]; rect.position.copy(el.group.position); rect.rotation.copy(el.group.rotation); rect.scale.set(3 / (2.2/2), 1 / (2.2/2), 1); rect.visible = true; });
@@ -792,20 +795,22 @@ function initCarousel() {
     }
 
     function onCanvasClick(event) {
-        const rippleMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.8 });
-        const rippleGeometry = new THREE.RingGeometry(0.01, 0.02, 64);
-        const ripple = new THREE.Mesh(rippleGeometry, rippleMaterial);
-        ripple.position.copy(mousePosition3D);
-        ripple.rotation.copy(camera.rotation);
-        cursorScene.add(ripple);
+        if (!bg_isMobile) {
+            const rippleMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.8 });
+            const rippleGeometry = new THREE.RingGeometry(0.01, 0.02, 64);
+            const ripple = new THREE.Mesh(rippleGeometry, rippleMaterial);
+            ripple.position.copy(mousePosition3D);
+            ripple.rotation.copy(camera.rotation);
+            cursorScene.add(ripple);
 
-        gsap.timeline({ onComplete: () => {
-            cursorScene.remove(ripple);
-            rippleGeometry.dispose();
-            rippleMaterial.dispose();
-        }})
-        .to(ripple.scale, { x: 20, y: 20, duration: 0.7, ease: 'power2.out' })
-        .to(ripple.material, { opacity: 0, duration: 0.6, ease: 'power2.out' }, "-=0.5");
+            gsap.timeline({ onComplete: () => {
+                cursorScene.remove(ripple);
+                rippleGeometry.dispose();
+                rippleMaterial.dispose();
+            }})
+            .to(ripple.scale, { x: 20, y: 20, duration: 0.7, ease: 'power2.out' })
+            .to(ripple.material, { opacity: 0, duration: 0.6, ease: 'power2.out' }, "-=0.5");
+        }
 
         if (isAnimating || htmlPopupOverlay.classList.contains('visible')) {
             return;
@@ -859,27 +864,18 @@ function initCarousel() {
     document.addEventListener('click', onCanvasClick);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('touchstart', (e) => {
+        if (e.target.closest("#html-popup-overlay")) return; // Prevent 3D clicks when popup is open
         mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-        const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-        vector.unproject(camera);
-        const dir = vector.sub(camera.position).normalize();
-        const distance = -camera.position.z / dir.z;
-        mousePosition3D.copy(camera.position).add(dir.multiplyScalar(distance));
+        raycaster.setFromCamera(mouse, camera);
         resetScriptenTimer();
     }, { passive: true });
 
-    let lastHoveredArrow = null;
-    let lastHoveredIndex = -1;
-    let wasHoveringInitial = false;
 
     function updateHoverState() {
         if (isAnimating || bg_isMobile) return;
 
         const isCurrentlyHoveringInitial = isInitialState && initialButtonMesh && raycaster.intersectObject(initialButtonMesh).length > 0;
-        wasHoveringInitial = isCurrentlyHoveringInitial;
-        lastHoveredArrow = hoveredArrow;
-        lastHoveredIndex = hoveredIndex;
         
         const isHovering = hoveredArrow || hoveredIndex !== -1 || isCurrentlyHoveringInitial || isHoveringHTML;
         
@@ -976,10 +972,6 @@ function initCarousel() {
     }
 }
         
-// =========================================================================
-// START OF GUARANTEED FIX: Final, simplified audio logic
-// =========================================================================
-        
 function stopAllPortfolioAudio() {
     document.querySelectorAll('#html-popup-overlay .demo-audio').forEach(audioEl => {
         if (audioEl) {
@@ -1042,18 +1034,17 @@ function initSwiper(context) {
     const swiperContainer = context.querySelector('.swiper-container');
     if (!swiperContainer) return;
 
-    const swiper = new Swiper(swiperContainer, {
+    new Swiper(swiperContainer, {
         effect: 'coverflow', grabCursor: true, centeredSlides: true, slidesPerView: 'auto',
         coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
-        pagination: { el: '.swiper-pagination' },
+        pagination: { el: '.swiper-pagination', clickable: true },
         navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
         loop: false,
         on: { slideChange: stopAllPortfolioAudio }
     });
     
-    // This is the entire audio logic. It is robust and isolated.
     swiperContainer.addEventListener('click', function(event) {
-        event.stopPropagation(); // Stop click from interfering with the 3D scene.
+        event.stopPropagation();
         
         const playButton = event.target.closest('.play-button-v2');
         if (!playButton) return;
@@ -1066,7 +1057,6 @@ function initSwiper(context) {
 
         const wasPlaying = !audioToPlay.paused;
         
-        // 1. Stop all audio and reset all buttons.
         document.querySelectorAll('.demo-audio').forEach(audio => {
             if (audio !== audioToPlay) {
                audio.pause();
@@ -1079,7 +1069,6 @@ function initSwiper(context) {
             }
         });
 
-        // 2. Toggle the state of the clicked audio.
         if (wasPlaying) {
             audioToPlay.pause();
             playButton.classList.remove('playing');
