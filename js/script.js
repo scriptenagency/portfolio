@@ -451,7 +451,6 @@ function initCarousel() {
                             <p class="project-description">UF EVENT INTRO</p>
                             <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/1-urban-festival.mp3" preload="none"></audio>
                         </div>
@@ -462,7 +461,6 @@ function initCarousel() {
                             <p class="project-description">working with Michael_Tebebu</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/2-speculative-advertisement-project.mp3" preload="none"></audio>
                         </div>
@@ -473,9 +471,8 @@ function initCarousel() {
                             <p class="project-description">Product Commercial</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/${repoName}/assets/audio/3-nature's-yum-episode1.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/3-nature's-yum-episode1.mp3".replace("'", "%27") preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -484,7 +481,6 @@ function initCarousel() {
                             <p class="project-description">UF EVENT INTRO</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/4-uf-le-blanco-01.mp3" preload="none"></audio>
                         </div>
@@ -495,7 +491,6 @@ function initCarousel() {
                             <p class="project-description">EVENT COMMERCIAL</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/5-deadline-radio-commercial.mp3" preload="none"></audio>
                         </div>
@@ -506,7 +501,6 @@ function initCarousel() {
                             <p class="project-description">EVENT COMMERCIAL</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/6-undercover-battle-festival-commercial.mp3" preload="none"></audio>
                         </div>
@@ -517,9 +511,8 @@ function initCarousel() {
                             <p class="project-description">Product Commercial</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/${repoName}/assets/audio/7-nature's-yum-episode2.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/7-natures-yum-episode2.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -528,7 +521,6 @@ function initCarousel() {
                             <p class="project-description">EVENT COMMERCIAL</p>
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
-                                <canvas class="waveform-canvas"></canvas>
                             </div>
                             <audio class="demo-audio" src="/${repoName}/assets/audio/8-bama-backwoods-trailride.mp3" preload="none"></audio>
                         </div>
@@ -1084,4 +1076,3 @@ document.fonts.ready.then(() => {
     bg_init(); 
     initCarousel(); 
 });
-
