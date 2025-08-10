@@ -519,7 +519,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/${repoName}/assets/audio/7-natures-yum-episode2.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/7-nature's-yum-episode2.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -1084,3 +1084,4 @@ document.fonts.ready.then(() => {
     bg_init(); 
     initCarousel(); 
 });
+
