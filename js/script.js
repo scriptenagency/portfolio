@@ -185,7 +185,7 @@ function initCarousel() {
     cursorRenderer.setPixelRatio(window.devicePixelRatio);
     cursorContainer.appendChild(cursorRenderer.domElement);
     
-    const buttonMaterial = new THREE.MeshPhysicalMaterial({ color: 0x444444, transmission: 0.5, roughness: 0.1, thickness: 2.0, ior: 1.5, side: THREE.DoubleSide, transparent: true });
+    const buttonMaterial = new THREE.MeshPhysicalMaterial({ color: 0x444444, transmission: 0.5, roughness: 0.1, ior: 1.5, side: THREE.DoubleSide, transparent: true });
     const buttonTextMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true });
     const cursorMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
     const neonArrowMaterial = new THREE.MeshBasicMaterial({ color: themes.red.mainNeon });
@@ -306,7 +306,7 @@ function initCarousel() {
         tl.to(carouselUIGroup.scale, { x: 0.5, y: 0.5, z: 0.5, duration: 0.4, ease: 'power2.in' })
           .add(() => { carouselUIGroup.visible = false; }, "-=0.1")
           .add(() => { htmlPopupOverlay.classList.add('visible'); })
-          .to(newPopup, { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2"); // Changed scale to 1 for mobile fix
+          .to(newPopup, { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2");
     }
 
     function hidePopup() {
@@ -440,8 +440,8 @@ function initCarousel() {
             webglScene.add(rect);
             transitionRects.push(rect);
         }
-
-        // ---------- ASSET PATHS FIXED BELOW ----------
+        
+        const repoName = "portfolio"; 
         const portfolioHTML = `
             <div class="swiper-container">
                 <div class="swiper-wrapper">
@@ -453,7 +453,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/1-urban-festival.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/1-urban-festival.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -464,7 +464,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/2-speculative-ad.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/2-speculative-ad.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -475,7 +475,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/3-natures-yum-1.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/3-natures-yum-1.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -486,7 +486,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/4-uf-le-blanco.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/4-uf-le-blanco.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -497,7 +497,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/5-deadline-radio.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/5-deadline-radio.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -508,7 +508,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/6-undercover-battle.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/6-undercover-battle.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -519,7 +519,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/7-natures-yum-2.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/7-natures-yum-2.mp3" preload="none"></audio>
                         </div>
                     </div>
                     <div class="swiper-slide">
@@ -530,7 +530,7 @@ function initCarousel() {
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                                 <canvas class="waveform-canvas"></canvas>
                             </div>
-                            <audio class="demo-audio" src="/portfolio/assets/audio/8-bama-trailride.mp3" preload="none"></audio>
+                            <audio class="demo-audio" src="/${repoName}/assets/audio/8-bama-trailride.mp3" preload="none"></audio>
                         </div>
                     </div>
                 </div>
@@ -634,16 +634,16 @@ function initCarousel() {
         const contactMeHTML = `<div class="contact-container">
             <div class="social-icons">
                 <a href="https://www.instagram.com/scripten.agency/" target="_blank" class="social-icon-wrapper">
-                    <div class="social-icon"><img src="/portfolio/assets/images/instagram.png" alt="Instagram"></div>
+                    <div class="social-icon"><img src="/${repoName}/assets/images/instagram.png" alt="Instagram"></div>
                     <span class="icon-label">Instagram</span>
                 </a>
                 <a href="https://contra.com/scripten" target="_blank" class="social-icon-wrapper">
-                   <div class="social-icon"><img src="/portfolio/assets/images/contra.png" alt="Contra"></div>
+                   <div class="social-icon"><img src="/${repoName}/assets/images/contra.png" alt="Contra"></div>
                    <span class="icon-label">Contra</span>
                 </a>
                 <div id="email-copy-btn" class="social-icon-wrapper">
                     <div class="social-icon">
-                       <img src="/portfolio/assets/images/mail.png" alt="Mail">
+                       <img src="/${repoName}/assets/images/mail.png" alt="Mail">
                         <span class="copy-success-msg">Copied! ✓</span>
                     </div>
                     <span class="icon-label">Mail</span>
