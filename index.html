@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Carousel with 3D Background</title>
+    
+    <!-- TWEEN.js for background animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+
+    <!-- Swiper.js for the new Coverflow Carousel -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="background-canvas"></div>
+    <div class="loading-overlay" id="loadingOverlay">Loading 3D Scene...</div>
+    <div id="transitionOverlay"></div>
+    <div id="scene-container"></div>
+    <div id="cursor-container"></div>
+    <div id="message-box"></div>
+
+    <div id="html-popup-overlay">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/",
+                "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.9.1/index.js"
+            }
+        }
+    </script>
+    
+    <!-- Link to your external JavaScript file -->
+    <script type="module" src="js/script.js"></script>
+</body>
+</html>
