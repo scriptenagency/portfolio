@@ -37,7 +37,7 @@ const themes = {
     }
 };
 
-// --- BACKGROUND SCENE (MODIFIED FOR THEME) ---
+// --- BACKGROUND SCENE (UNCHANGED AS REQUESTED) ---
 const bg_isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 let bg_scene, bg_camera, bg_renderer, bg_composer;
 const bg_clock = new THREE.Clock();
@@ -154,7 +154,7 @@ function bg_animate() { requestAnimationFrame(bg_animate); const elapsedTime = b
     bg_composer.render(); 
 }
 
-// --- FOREGROUND SCENE (MODIFIED) ---
+// --- FOREGROUND SCENE (MODIFIED FOR MOBILE SCALING) ---
 function initCarousel() {
 
     if (bg_isMobile) {
@@ -303,7 +303,10 @@ function initCarousel() {
             }
         });
 
-        tl.to(carouselUIGroup.scale, { x: 0.5, y: 0.5, z: 0.5, duration: 0.4, ease: 'power2.in' })
+        // MODIFICATION FOR SCALING: We also scale down the main UI Group during popup
+        // Note: The logic inside updateCarouselScale() will keep it at the correct base size upon closing
+        const currentScale = carouselUIGroup.scale.x;
+        tl.to(carouselUIGroup.scale, { x: currentScale * 0.5, y: currentScale * 0.5, z: currentScale * 0.5, duration: 0.4, ease: 'power2.in' })
           .add(() => { carouselUIGroup.visible = false; }, "-=0.1")
           .add(() => { htmlPopupOverlay.classList.add('visible'); })
           .to(newPopup, { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2");
@@ -330,12 +333,12 @@ function initCarousel() {
             }
         });
 
+        const targetScale = window.innerWidth < 768 ? 0.65 : 1.0;
         tl.to(popupElement, { scale: 0.5, opacity: 0, duration: 0.4, ease: 'power2.in' })
           .add(() => { carouselUIGroup.visible = true; }, "-=0.1")
-          .to(carouselUIGroup.scale, { x: 1, y: 1, z: 1, duration: 0.4, ease: 'power2.out' }, "-=0.2")
+          .to(carouselUIGroup.scale, { x: targetScale, y: targetScale, z: targetScale, duration: 0.4, ease: 'power2.out' }, "-=0.2")
           .add(() => {
                 manageBlurState(false);
-                gsap.to(carouselUIGroup.scale, { x: 1, y: 1, z: 1, duration: 0.5, delay: 0.3, ease: 'power2.out' });
                 resetInactivityTimer();
           }, "-=0.4");
     }
@@ -512,7 +515,6 @@ function initCarousel() {
                              <div class="audio-player-v2">
                                 <button class="play-button-v2"><svg class="play-icon-v2" viewBox="0 0 100 100"><path d="M 30,20 L 30,80 L 80,50 Z"></path></svg><svg class="pause-icon-v2" viewBox="0 0 100 100"><path d="M 30 20 H 40 V 80 H 30 V 20 Z M 60 20 H 70 V 80 H 60 V 20 Z"></path></svg></button>
                             </div>
-                            <!-- FIX: The apostrophe was missing in the filename. Corrected it to "nature's". -->
                             <audio class="demo-audio" src="/${repoName}/assets/audio/7-nature's-yum-episode2.mp3" preload="none"></audio>
                         </div>
                     </div>
@@ -916,15 +918,51 @@ function initCarousel() {
     }
     animateCarousel();
 
+    // ==========================================================
+    // == START: NEW DYNAMIC SCALING LOGIC
+    // ==========================================================
+    function updateCarouselScale() {
+        const width = window.innerWidth;
+        const isMobileLayout = width < 768; // Our breakpoint for when to scale down
+
+        // Determine the target scale factor.
+        // 1.0 is full size (for desktop).
+        // 0.65 is 65% of the original size (for mobile). Adjust this value as needed.
+        const targetScale = isMobileLayout ? 0.65 : 1.0; 
+
+        // Animate the entire UI group to the new scale.
+        // We use GSAP for a smooth transition if the user rotates their phone.
+        gsap.to(carouselUIGroup.scale, {
+            duration: 0.5,
+            x: targetScale,
+            y: targetScale,
+            z: targetScale,
+            ease: 'power2.out'
+        });
+    }
+
     window.addEventListener('resize', () => {
+        // Standard camera and renderer updates
         const width = window.innerWidth;
         const height = window.innerHeight;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
-        if(!bg_isMobile) cursorRenderer.setSize(width, height);
+        if (!bg_isMobile) cursorRenderer.setSize(width, height);
+
+        // Call our new scaling logic
+        updateCarouselScale();
+
+        // Call the background resize handler (this doesn't change its composition, just its aspect ratio)
         bg_onWindowResize();
     });
+
+    // Run it once on initial load to set the correct starting scale
+    updateCarouselScale();
+    // ==========================================================
+    // == END: NEW DYNAMIC SCALING LOGIC
+    // ==========================================================
+
 
     function transitionTheme(toBlue) {
         const endTheme = toBlue ? themes.blue : themes.red;
@@ -1077,4 +1115,3 @@ document.fonts.ready.then(() => {
     bg_init(); 
     initCarousel(); 
 });
-
