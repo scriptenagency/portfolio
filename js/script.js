@@ -154,7 +154,7 @@ function bg_animate() { requestAnimationFrame(bg_animate); const elapsedTime = b
     bg_composer.render(); 
 }
 
-// --- FOREGROUND SCENE (MODIFIED FOR MOBILE SCALING) ---
+// --- FOREGROUND SCENE (MODIFIED FOR MOBILE SCALING & CAROUSEL OPACITY) ---
 function initCarousel() {
 
     if (bg_isMobile) {
@@ -303,8 +303,6 @@ function initCarousel() {
             }
         });
 
-        // MODIFICATION FOR SCALING: We also scale down the main UI Group during popup
-        // Note: The logic inside updateCarouselScale() will keep it at the correct base size upon closing
         const currentScale = carouselUIGroup.scale.x;
         tl.to(carouselUIGroup.scale, { x: currentScale * 0.5, y: currentScale * 0.5, z: currentScale * 0.5, duration: 0.4, ease: 'power2.in' })
           .add(() => { carouselUIGroup.visible = false; }, "-=0.1")
@@ -713,14 +711,31 @@ function initCarousel() {
     function startScriptenTimer() { clearTimeout(scriptenInactivityTimer); if (isInitialState) { scriptenInactivityTimer = setTimeout(() => { if (isInitialState) { gsap.to(initialButtonGroup.scale, { x: 0, y: 0, z: 0, duration: 0.5, ease: 'power2.in' }); isScriptenButtonVisible = false; } }, 6000); } }
     function resetScriptenTimer() { clearTimeout(scriptenInactivityTimer); if (isInitialState) { if (!isScriptenButtonVisible) { gsap.to(initialButtonGroup.scale, { x: 1, y: 1, z: 1, duration: 0.5, ease: 'power2.out' }); isScriptenButtonVisible = true; } startScriptenTimer(); } }
     
+    // ==========================================================
+    // == CHANGE #2: UPGRADED `updateCarouselOpacities` function
+    // ==========================================================
     function updateCarouselOpacities(duration = 0) {
+        // Calculate the index of the element that is directly behind the active one.
+        const backIndex = (currentIndex + Math.floor(numOptions / 2)) % numOptions;
+
         carouselElements.forEach((el, i) => {
             const textMesh = el.textMesh;
             const rectMesh = el.rectMesh;
-            let targetOpacity = 0.55; 
-            let textOpacity = 0;   
-            const pos_offset = (i - currentIndex + numOptions) % numOptions;
-            if (pos_offset === 0) { targetOpacity = 1.0; textOpacity = 1.0; } 
+
+            let targetOpacity = 0.55; // Default for side elements
+            let textOpacity = 0;
+
+            if (i === currentIndex) {
+                // This is the active, front-most element.
+                targetOpacity = 1.0;
+                textOpacity = 1.0;
+            } else if (i === backIndex) {
+                // This is the hidden, back-most element.
+                targetOpacity = 0;
+                textOpacity = 0;
+            }
+            
+            // Animate to the new opacities.
             gsap.to(rectMesh.material, { opacity: targetOpacity, duration });
             gsap.to(textMesh.material, { opacity: textOpacity, duration });
         });
@@ -774,20 +789,31 @@ function initCarousel() {
         tl.to(initialButtonTextMesh.material, { opacity: 1, duration: 0.5 });
     }
 
+    // ==========================================================
+    // == CHANGE #3: UPGRADED `rotateFlatCarousel` function
+    // ==========================================================
     function rotateFlatCarousel(direction) {
         if (isAnimating || currentPopupName) return;
-        isAnimating = true; resetInactivityTimer(); hoveredIndex = -1;
-        const oldIndex = currentIndex;
+        isAnimating = true; 
+        resetInactivityTimer(); 
+        hoveredIndex = -1;
+
         currentIndex = (currentIndex + direction + numOptions) % numOptions;
+        
         const rotationAngle = -(Math.PI * 2) / numOptions * direction;
-        const rotationDuration = 1.2; const fadeDuration = 0.5;
+        const rotationDuration = 1.2;
+
         const tl = gsap.timeline({ onComplete: () => { isAnimating = false; } });
-        tl.to(carouselElements[oldIndex].textMesh.material, { opacity: 0, duration: fadeDuration, ease: "power2.in" }, 0);
-        tl.to(flatCarouselParent.rotation, { y: `+=${rotationAngle}`, duration: rotationDuration, ease: "power4.inOut" }, 0);
-        tl.to(carouselElements[oldIndex].rectMesh.material, { opacity: 0.55, duration: rotationDuration, ease: "power2.inOut" }, 0);
-        tl.to(carouselElements[currentIndex].rectMesh.material, { opacity: 1.0, duration: rotationDuration, ease: "power2.inOut" }, 0);
-        const fadeInStartTime = rotationDuration - fadeDuration;
-        tl.to(carouselElements[currentIndex].textMesh.material, { opacity: 1.0, duration: fadeDuration, ease: "power2.out" }, fadeInStartTime);
+        
+        // Animate the parent object's rotation.
+        tl.to(flatCarouselParent.rotation, { 
+            y: `+=${rotationAngle}`, 
+            duration: rotationDuration, 
+            ease: "power4.inOut" 
+        }, 0);
+        
+        // Simultaneously, tell our new helper function to update all opacities.
+        updateCarouselOpacities(rotationDuration);
     }
 
     function onCanvasClick(event) {
@@ -919,19 +945,14 @@ function initCarousel() {
     animateCarousel();
 
     // ==========================================================
-    // == START: NEW DYNAMIC SCALING LOGIC
+    // == CHANGE #1: DYNAMIC SCALING LOGIC FOR MOBILE
     // ==========================================================
     function updateCarouselScale() {
         const width = window.innerWidth;
         const isMobileLayout = width < 768; // Our breakpoint for when to scale down
 
-        // Determine the target scale factor.
-        // 1.0 is full size (for desktop).
-        // 0.65 is 65% of the original size (for mobile). Adjust this value as needed.
         const targetScale = isMobileLayout ? 0.65 : 1.0; 
 
-        // Animate the entire UI group to the new scale.
-        // We use GSAP for a smooth transition if the user rotates their phone.
         gsap.to(carouselUIGroup.scale, {
             duration: 0.5,
             x: targetScale,
@@ -942,7 +963,6 @@ function initCarousel() {
     }
 
     window.addEventListener('resize', () => {
-        // Standard camera and renderer updates
         const width = window.innerWidth;
         const height = window.innerHeight;
         camera.aspect = width / height;
@@ -950,18 +970,11 @@ function initCarousel() {
         renderer.setSize(width, height);
         if (!bg_isMobile) cursorRenderer.setSize(width, height);
 
-        // Call our new scaling logic
         updateCarouselScale();
-
-        // Call the background resize handler (this doesn't change its composition, just its aspect ratio)
         bg_onWindowResize();
     });
 
-    // Run it once on initial load to set the correct starting scale
     updateCarouselScale();
-    // ==========================================================
-    // == END: NEW DYNAMIC SCALING LOGIC
-    // ==========================================================
 
 
     function transitionTheme(toBlue) {
