@@ -537,31 +537,26 @@ textarea { resize: none; height: 90px; }
     
     /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
     .swiper-container {
-        padding-top: 30px;
-        padding-bottom: 30px;
-        height: 100%;
         width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
-        position: relative; /* Add this to allow child absolute positioning */
+        padding-top: 20px;
+        padding-bottom: 25px; /* Ensures space for pagination */
     }
     
     .swiper-slide {
-        /* Make frames smaller and taller */
-        width: 45vw; 
-        height: 60vw;
-        max-width: 220px;
-        max-height: 290px;
+        /* THIS IS THE -40% SHRINK */
+        width: 192px;  /* 320px * 0.6 = 192px */
+        height: 192px; /* 320px * 0.6 = 192px */
     }
     
     .demo-card {
         padding: 0.8rem;
-        display: flex;
-        flex-direction: column;
     }
     
     .work-title {
-        font-size: 0.8rem; /* Smaller text title */
+        font-size: 0.8rem; /* Smaller font */
         line-height: 1.3;
         flex-shrink: 0;
         /* THIS IS THE TEXT TRUNCATION LOGIC */
@@ -580,27 +575,18 @@ textarea { resize: none; height: 90px; }
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.4rem;
-    }
-
-    .audio-player-v2 {
-        flex-shrink: 0; /* Prevents button from shrinking */
-        padding-top: 0;
-        gap: 0;
+        margin-bottom: 0.25rem;
     }
     
-    .swiper-pagination {
-        /* Pushes the pagination dots up so they are visible */
-        bottom: 5px !important;
-    }
+    .audio-player-v2 { flex-shrink: 0; padding-top: 0; gap: 0;}
+    
+    .play-button-v2 { width: 35px; height: 35px; } /* Smaller button */
 
-    /* Move the arrows to be closer and vertically centered */
-    .swiper-button-next, .swiper-button-prev {
-        top: 45% !important; 
-    }
-    .swiper-button-next::after, .swiper-button-prev::after {
-        font-size: 1.5rem !important;
-    }
+    .swiper-pagination { bottom: 2px !important; }
+
+    .swiper-button-next, .swiper-button-prev { top: 45% !important; }
+    
+    .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.4rem !important; }
     /* ========================================== */
 
     .hire-me-buttons {
