@@ -211,7 +211,7 @@ function initCarousel() {
     webglScene.add(initialButtonGroup, carouselUIGroup);
     carouselUIGroup.add(flatCarouselParent);
 
-    // CHANGE #1: Set initial scale immediately based on screen size for smooth load
+    // CHANGE: Set initial scale immediately based on screen size for smooth load
     const initialScale = window.innerWidth < 768 ? 0.65 : 1.0;
     carouselUIGroup.scale.set(initialScale, initialScale, initialScale);
 
@@ -703,7 +703,7 @@ function initCarousel() {
         };
 
         updateCarouselOpacities();
-        updateActiveElementScale(); // CHANGE #2: Initial call to scale up the first active item.
+        updateActiveElementScale(); 
         startScriptenTimer();
     });
 
@@ -736,26 +736,19 @@ function initCarousel() {
         });
     }
 
-    // CHANGE #2: New function to scale the active carousel element and arrows on mobile.
     function updateActiveElementScale(duration = 0.5) {
-        if (window.innerWidth >= 768) { // Desktop: Ensure everything is at default scale
+        if (window.innerWidth >= 768) {
             carouselElements.forEach(el => gsap.to(el.group.scale, { x: 1, y: 1, z: 1, duration }));
             gsap.to([leftArrow.scale, rightArrow.scale], { x: 1, y: 1, z: 1, duration });
             return;
         }
 
-        // Mobile: Scale up the active element and arrows, scale down others.
-        const activeScale = 2.0; // 200% bigger
-        const inactiveScale = 1.0; // Default size
+        const activeScale = 2.0;
+        const inactiveScale = 1.0;
         
         carouselElements.forEach((el, i) => {
             const targetScale = (i === currentIndex) ? activeScale : inactiveScale;
-            gsap.to(el.group.scale, {
-                x: targetScale,
-                y: targetScale,
-                z: targetScale,
-                duration
-            });
+            gsap.to(el.group.scale, { x: targetScale, y: targetScale, z: targetScale, duration });
         });
         
         gsap.to([leftArrow.scale, rightArrow.scale], { x: activeScale, y: activeScale, z: activeScale, duration });
@@ -810,7 +803,7 @@ function initCarousel() {
         tl.to(initialButtonTextMesh.material, { opacity: 1, duration: 0.5 });
     }
 
-    function rotateFlatCarousel(direction, duration = 1.2) {
+    function rotateFlatCarousel(direction) {
         if (isAnimating || currentPopupName) return;
         isAnimating = true; 
         resetInactivityTimer(); 
@@ -819,13 +812,14 @@ function initCarousel() {
         currentIndex = (currentIndex + direction + numOptions) % numOptions;
         
         const rotationAngle = -(Math.PI * 2) / numOptions * direction;
+        const rotationDuration = 1.2;
         
         const tl = gsap.timeline({ onComplete: () => { isAnimating = false; } });
         
-        tl.to(flatCarouselParent.rotation, { y: `+=${rotationAngle}`, duration, ease: "power4.inOut" }, 0);
+        tl.to(flatCarouselParent.rotation, { y: `+=${rotationAngle}`, duration: rotationDuration, ease: "power4.inOut" }, 0);
         
-        updateCarouselOpacities(duration);
-        updateActiveElementScale(duration * 0.5); // Make scale animation faster than rotation
+        updateCarouselOpacities(rotationDuration);
+        updateActiveElementScale(rotationDuration * 0.5);
     }
 
     function onCanvasClick(event) {
@@ -864,8 +858,9 @@ function initCarousel() {
             const intersects = raycaster.intersectObjects([leftArrow, rightArrow, ...carouselMeshes, activeElement.textMesh]);
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
-                if (clickedObject === leftArrow) rotateFlatCarousel(1); // Click direction is swapped for visual sense
-                else if (clickedObject === rightArrow) rotateFlatCarousel(-1);
+                // BUG FIX: Arrow directions are now intuitive.
+                if (clickedObject === leftArrow) rotateFlatCarousel(-1); 
+                else if (clickedObject === rightArrow) rotateFlatCarousel(1);
                 else if (clickedObject === activeElement.rectMesh || clickedObject === activeElement.textMesh) {
                     openPopup(carouselOptions[currentIndex]);
                 }
@@ -897,56 +892,7 @@ function initCarousel() {
     
     document.addEventListener('click', onCanvasClick);
     document.addEventListener('mousemove', onMouseMove);
-
-    // CHANGE #2: New touch controls for mobile swiping
-    let touchStartX = 0;
-    let currentAngle = 0;
-    let startAngle = 0;
-    let isDragging = false;
-    
-    function onTouchStart(event) {
-        if(isAnimating || isInitialState || htmlPopupOverlay.classList.contains('visible')) return;
-        event.preventDefault(); // Prevent page scroll
-        isDragging = true;
-        touchStartX = event.touches[0].clientX;
-        startAngle = flatCarouselParent.rotation.y;
-    }
-    
-    function onTouchMove(event) {
-        if (!isDragging) return;
-        event.preventDefault();
-        const touchX = event.touches[0].clientX;
-        const deltaX = touchX - touchStartX;
-        // Adjust drag sensitivity: larger divisor = less sensitive
-        const rotationChange = (deltaX / window.innerWidth) * Math.PI * 1.5;
-        flatCarouselParent.rotation.y = startAngle - rotationChange;
-    }
-
-    function onTouchEnd(event) {
-        if (!isDragging) return;
-        isDragging = false;
-        
-        const rotationDifference = flatCarouselParent.rotation.y - startAngle;
-        const anglePerItem = (Math.PI * 2) / numOptions;
-        
-        // Snap to nearest item based on swipe distance
-        const itemsSwiped = Math.round(rotationDifference / anglePerItem);
-        const direction = itemsSwiped > 0 ? -1 : (itemsSwiped < 0 ? 1 : 0);
-        
-        if (direction !== 0) {
-            rotateFlatCarousel(direction, 0.5);
-        } else { // Snap back if not swiped far enough
-            gsap.to(flatCarouselParent.rotation, { y: startAngle, duration: 0.3 });
-        }
-    }
-
-    if (bg_isMobile) {
-        sceneContainer.addEventListener('touchstart', onTouchStart, { passive: false });
-        sceneContainer.addEventListener('touchmove', onTouchMove, { passive: false });
-        sceneContainer.addEventListener('touchend', onTouchEnd);
-    }
-    
-    document.addEventListener('touchstart', (e) => { // This remains for inactivity timer reset
+    document.addEventListener('touchstart', (e) => {
         if (e.target.closest("#html-popup-overlay")) return;
         mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
@@ -1031,7 +977,7 @@ function initCarousel() {
         if (!bg_isMobile) cursorRenderer.setSize(width, height);
 
         updateCarouselScale();
-        updateActiveElementScale(0); // Instantly update active scale on resize
+        updateActiveElementScale(0);
         bg_onWindowResize();
     });
 
