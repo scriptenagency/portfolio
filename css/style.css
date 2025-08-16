@@ -528,65 +528,65 @@ textarea { resize: none; height: 90px; }
         padding: 15px;
     }
     
+    /* === THIS IS THE ONLY CHANGE === */
     .popup-content-wrapper {
-        overflow: hidden;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: center; /* THIS IS THE Y-AXIS CENTERING */
+        justify-content: center; /* THIS IS THE X-AXIS CENTERING */
+        overflow: hidden;
     }
     
-    /* === THE FINAL AND CORRECT PORTFOLIO POPUP FIX === */
     .swiper-container {
         width: 100%;
-        height: auto;      /* Let height be determined by content */
-        padding: 0;
+        height: auto; /* Let the slides determine the container height */
+        padding: 0; /* Remove padding to allow perfect centering */
     }
     
     .swiper-slide {
-        /* Shorter frames that are wider than they are tall */
-        width: 50vw;
-        height: 40vw; /* <-- THIS MAKES THE FRAME SHORTER */
-        max-width: 220px;
-        max-height: 180px;
+        width: 45vw;
+        height: 60vw; /* Taller slides */
+        max-width: 190px;
+        max-height: 250px;
     }
     
     .demo-card {
-        padding: 0.7rem;
+        padding: 0.8rem;
     }
     
     .work-title {
         font-size: 0.75rem;
         line-height: 1.25;
-        margin-bottom: 0.2rem; /* Closer */
+        margin-bottom: 0.3rem; /* Compact spacing */
         height: 2.5em; /* Fixed height for 2 lines */
         overflow: hidden;
+        text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
 
     .project-description {
-        font-size: 0.6rem;
-        margin-bottom: 0.3rem; /* Closer */
+        font-size: 0.65rem;
+        margin-bottom: 0.5rem; /* Compact spacing */
         flex-grow: 1; 
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
-    .audio-player-v2 { flex-shrink: 0; padding: 0; gap: 0; }
+    .audio-player-v2 { padding: 0; gap: 0; flex-shrink: 0; }
     
-    .play-button-v2 { width: 35px; height: 35px; }
+    .play-button-v2 { width: 40px; height: 40px; }
 
     .swiper-pagination {
         position: relative; /* Take up space in the document flow */
-        bottom: auto; /* Reset any absolute positioning */
-        margin-top: 8px; /* Add a small gap above the dots */
+        bottom: auto; /* Reset positioning */
+        margin-top: 5px; /* A small gap above the dots */
     }
 
-    .swiper-button-next, .swiper-button-prev { top: 48% !important; }
+    .swiper-button-next, .swiper-button-prev { top: 42% !important; }
     
-    .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.5rem !important; }
+    .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.4rem !important; }
     /* ========================================== */
 
     .hire-me-buttons {
