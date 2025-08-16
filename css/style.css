@@ -529,20 +529,34 @@ textarea { resize: none; height: 90px; }
     }
     
     .popup-content-wrapper {
-        overflow: auto;
+        /* This ensures the swiper fits without forcing a scrollbar on its parent */
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
+    /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
     .swiper-container {
-        padding-top: 25px;
-        padding-bottom: 25px;
+        height: 90%; /* Take up less vertical space */
+        padding-top: 10px; /* Reduce padding to fit everything */
+        padding-bottom: 30px; /* More padding at bottom for pagination */
     }
 
-    /* === THE FINAL CHANGE === */
-    /* Shrink the slides by 35% from their previous size */
     .swiper-slide {
-        width: 42.25vw; /* 65vw * 0.65 */
-        height: 42.25vw;
+        /* Shrink slides to be ~35% smaller than their previous mobile size */
+        width: 42vw;
+        height: 42vw;
     }
+
+    .demo-card {
+        padding: 0.75rem; /* Less padding inside the smaller card */
+    }
+
+    .work-title { font-size: 1rem; }
+    .project-description { font-size: 0.6rem; margin-bottom: 0.5rem;}
+    .play-button-v2 { width: 40px; height: 40px; }
+    /* ========================================== */
 
     .swiper-button-next::after, .swiper-button-prev::after {
         font-size: 1.5rem !important;
@@ -564,10 +578,10 @@ textarea { resize: none; height: 90px; }
         font-size: 16px;
     }
 
+    .reviews-container { padding: 1rem; }
     h2 { font-size: 1.4rem; }
-    .work-title { font-size: 1.1rem; }
-    .project-description, .review-details, .icon-label, label { font-size: 0.75rem; }
-    .review-quote { font-size: 1.1rem; line-height: 1.5; }
+    .review-quote { font-size: 1rem; margin-bottom: 1rem; }
     .review-quote::before { font-size: 2rem; }
-    .social-icons { gap: 1.5rem; }
+    .icon-label { font-size: 0.7rem; }
+    .social-icons { gap: 1rem; }
 }
