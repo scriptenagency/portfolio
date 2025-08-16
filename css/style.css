@@ -534,35 +534,49 @@ textarea { resize: none; height: 90px; }
         align-items: center;
         justify-content: center;
     }
-
-    /* === FINAL PORTFOLIO POPUP FIX === */
+    
+    /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
     .swiper-container {
-        padding-top: 10px;
-        padding-bottom: 30px;
-    }
-
-    .swiper-slide {
-        /* Set a taller aspect ratio for the frames */
-        width: 50vw;
-        height: 60vw;
-        max-width: 260px; /* Add a max-width for larger mobile screens */
-        max-height: 310px;
+        position: relative;
+        top: 25px; /* PUSHES THE ENTIRE CAROUSEL DOWN FROM THE TOP */
+        padding: 0;
+        height: 95%; /* Adjust height to fit */
     }
     
-    /* These three lines are the key to the alignment */
+    .swiper-slide {
+        /* This makes the card itself taller, giving more space for text and aligning play buttons */
+        width: 48vw; 
+        height: 58vw; /* TALLER ASPECT RATIO (width*1.2) */
+        max-width: 250px;
+        max-height: 300px;
+    }
+    
+    /* This Flexbox logic is the secret to perfect vertical alignment inside the taller card */
     .demo-card {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
     }
     
-    .work-title { font-size: 1rem; margin-bottom: 0.5rem; }
-    .project-description { font-size: 0.7rem; }
+    .work-title {
+        font-size: 1rem;
+        flex-shrink: 0; /* Prevents text from shrinking */
+    }
+    .project-description {
+        font-size: 0.7rem;
+        flex-grow: 1; /* Allows this element to grow, pushing the play button down */
+        display: flex;
+        align-items: center; /* Center the text vertically in its space */
+        justify-content: center;
+    }
+    .audio-player-v2 {
+        flex-shrink: 0; /* Keeps the player from shrinking */
+    }
+    /* ========================================== */
+
     .play-button-v2 { width: 45px; height: 45px; }
     .swiper-button-next::after, .swiper-button-prev::after {
         font-size: 1.5rem !important;
     }
-    /* ========================================== */
 
     .hire-me-buttons {
         flex-direction: row;
