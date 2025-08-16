@@ -535,57 +535,59 @@ textarea { resize: none; height: 90px; }
         justify-content: center;
     }
     
-    /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
+    /* === FINAL, PRECISE PORTFOLIO POPUP FIX V3 === */
     .swiper-container {
+        /* This box contains the slides and arrows */
         width: 100%;
-        height: 100%;
+        height: 100%; 
+        padding-top: 25px;      /* Space for the popup title */
+        padding-bottom: 25px;   /* Space for pagination */
         display: flex;
-        align-items: center;
-        padding-top: 20px;
-        padding-bottom: 25px; /* Ensures space for pagination */
+        align-items: center;    /* Vertically center the slides */
+        justify-content: center; /* Horizontally center the active slide */
+        box-sizing: border-box;
     }
     
     .swiper-slide {
-        /* THIS IS THE -40% SHRINK */
-        width: 192px;  /* 320px * 0.6 = 192px */
-        height: 192px; /* 320px * 0.6 = 192px */
+        /* Shrink slides to ~40% of their original desktop size */
+        width: 130px;  /* (320px * ~0.4) */
+        height: 160px; /* Make the frames taller for text */
     }
     
     .demo-card {
-        padding: 0.8rem;
+        padding: 0.5rem; /* Reduce padding inside the smaller card */
     }
     
     .work-title {
-        font-size: 0.8rem; /* Smaller font */
-        line-height: 1.3;
+        font-size: 0.75rem; /* Smaller text */
+        line-height: 1.2;
+        margin-bottom: 0.25rem; /* Make it closer to description */
         flex-shrink: 0;
-        /* THIS IS THE TEXT TRUNCATION LOGIC */
-        height: 2.6em; /* Set a fixed height for exactly two lines (line-height * 2) */
+        /* THE TEXT TRUNCATION LOGIC */
+        height: 2.4em; /* Set a fixed height for exactly two lines */
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* Limit to 2 lines */
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        margin-bottom: 0.4rem;
     }
 
     .project-description {
-        font-size: 0.6rem;
-        flex-grow: 1; /* Pushes the button to the bottom */
+        font-size: 0.6rem; /* Smaller text */
+        margin-bottom: 0.5rem; /* Make it closer to play button */
+        flex-grow: 1; 
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.25rem;
     }
     
-    .audio-player-v2 { flex-shrink: 0; padding-top: 0; gap: 0;}
+    .audio-player-v2 { flex-shrink: 0; padding: 0; gap: 0; }
     
-    .play-button-v2 { width: 35px; height: 35px; } /* Smaller button */
+    .play-button-v2 { width: 35px; height: 35px; }
 
-    .swiper-pagination { bottom: 2px !important; }
-
-    .swiper-button-next, .swiper-button-prev { top: 45% !important; }
-    
+    /* Final positioning for controls */
+    .swiper-pagination { bottom: 0px !important; }
+    .swiper-button-next, .swiper-button-prev { top: 50% !important; }
     .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.4rem !important; }
     /* ========================================== */
 
