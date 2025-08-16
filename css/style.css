@@ -535,46 +535,39 @@ textarea { resize: none; height: 90px; }
         justify-content: center;
     }
     
-    /* === FINAL, PRECISE PORTFOLIO POPUP FIX V3 === */
+    /* === THE FINAL AND CORRECT PORTFOLIO POPUP FIX === */
     .swiper-container {
-        /* This box contains the slides and arrows */
         width: 100%;
-        height: 100%; 
-        padding-top: 25px;      /* Space for the popup title */
-        padding-bottom: 25px;   /* Space for pagination */
-        display: flex;
-        align-items: center;    /* Vertically center the slides */
-        justify-content: center; /* Horizontally center the active slide */
-        box-sizing: border-box;
+        height: auto;      /* Let height be determined by content */
+        padding: 0;
     }
     
     .swiper-slide {
-        /* Shrink slides to ~40% of their original desktop size */
-        width: 130px;  /* (320px * ~0.4) */
-        height: 160px; /* Make the frames taller for text */
+        /* Shorter frames that are wider than they are tall */
+        width: 50vw;
+        height: 40vw; /* <-- THIS MAKES THE FRAME SHORTER */
+        max-width: 220px;
+        max-height: 180px;
     }
     
     .demo-card {
-        padding: 0.5rem; /* Reduce padding inside the smaller card */
+        padding: 0.7rem;
     }
     
     .work-title {
-        font-size: 0.75rem; /* Smaller text */
-        line-height: 1.2;
-        margin-bottom: 0.25rem; /* Make it closer to description */
-        flex-shrink: 0;
-        /* THE TEXT TRUNCATION LOGIC */
-        height: 2.4em; /* Set a fixed height for exactly two lines */
+        font-size: 0.75rem;
+        line-height: 1.25;
+        margin-bottom: 0.2rem; /* Closer */
+        height: 2.5em; /* Fixed height for 2 lines */
         overflow: hidden;
-        text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
 
     .project-description {
-        font-size: 0.6rem; /* Smaller text */
-        margin-bottom: 0.5rem; /* Make it closer to play button */
+        font-size: 0.6rem;
+        margin-bottom: 0.3rem; /* Closer */
         flex-grow: 1; 
         display: flex;
         align-items: center;
@@ -585,10 +578,15 @@ textarea { resize: none; height: 90px; }
     
     .play-button-v2 { width: 35px; height: 35px; }
 
-    /* Final positioning for controls */
-    .swiper-pagination { bottom: 0px !important; }
-    .swiper-button-next, .swiper-button-prev { top: 50% !important; }
-    .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.4rem !important; }
+    .swiper-pagination {
+        position: relative; /* Take up space in the document flow */
+        bottom: auto; /* Reset any absolute positioning */
+        margin-top: 8px; /* Add a small gap above the dots */
+    }
+
+    .swiper-button-next, .swiper-button-prev { top: 48% !important; }
+    
+    .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.5rem !important; }
     /* ========================================== */
 
     .hire-me-buttons {
