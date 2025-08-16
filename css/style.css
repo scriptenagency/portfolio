@@ -537,43 +537,54 @@ textarea { resize: none; height: 90px; }
     
     /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
     .swiper-container {
-        position: relative;
-        top: 25px; /* PUSHES THE ENTIRE CAROUSEL DOWN FROM THE TOP */
-        padding: 0;
-        height: 95%; /* Adjust height to fit */
+        padding-top: 30px; /* Space for title */
+        padding-bottom: 30px; /* Space for pagination dots */
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
     }
     
     .swiper-slide {
-        /* This makes the card itself taller, giving more space for text and aligning play buttons */
-        width: 48vw; 
-        height: 58vw; /* TALLER ASPECT RATIO (width*1.2) */
-        max-width: 250px;
-        max-height: 300px;
+        width: 45vw; 
+        height: 58vw; /* Taller aspect ratio */
+        max-width: 220px;
+        max-height: 280px;
     }
     
-    /* This Flexbox logic is the secret to perfect vertical alignment inside the taller card */
     .demo-card {
+        padding: 1rem;
         display: flex;
         flex-direction: column;
     }
     
     .work-title {
-        font-size: 1rem;
-        flex-shrink: 0; /* Prevents text from shrinking */
+        font-size: 0.9rem;
+        flex-shrink: 0;
+        /* THIS IS THE TEXT TRUNCATION LOGIC */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to 2 lines */
+        -webkit-box-orient: vertical;
     }
+
     .project-description {
-        font-size: 0.7rem;
-        flex-grow: 1; /* Allows this element to grow, pushing the play button down */
+        font-size: 0.65rem;
+        flex-grow: 1; /* Pushes the button to the bottom */
         display: flex;
-        align-items: center; /* Center the text vertically in its space */
+        align-items: center;
         justify-content: center;
+        margin-bottom: 0.5rem;
     }
     .audio-player-v2 {
-        flex-shrink: 0; /* Keeps the player from shrinking */
+        flex-shrink: 0; /* Prevents button from shrinking */
+        padding-top: 0;
+        gap: 0.5rem;
     }
     /* ========================================== */
 
-    .play-button-v2 { width: 45px; height: 45px; }
+    .play-button-v2 { width: 40px; height: 40px; }
     .swiper-button-next::after, .swiper-button-prev::after {
         font-size: 1.5rem !important;
     }
