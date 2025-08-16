@@ -529,38 +529,40 @@ textarea { resize: none; height: 90px; }
     }
     
     .popup-content-wrapper {
-        /* This ensures the swiper fits without forcing a scrollbar on its parent */
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    /* === FINAL, PRECISE PORTFOLIO POPUP FIX === */
+    /* === FINAL PORTFOLIO POPUP FIX === */
     .swiper-container {
-        height: 90%; /* Take up less vertical space */
-        padding-top: 10px; /* Reduce padding to fit everything */
-        padding-bottom: 30px; /* More padding at bottom for pagination */
+        padding-top: 10px;
+        padding-bottom: 30px;
     }
 
     .swiper-slide {
-        /* Shrink slides to be ~35% smaller than their previous mobile size */
-        width: 42vw;
-        height: 42vw;
+        /* Set a taller aspect ratio for the frames */
+        width: 50vw;
+        height: 60vw;
+        max-width: 260px; /* Add a max-width for larger mobile screens */
+        max-height: 310px;
     }
-
+    
+    /* These three lines are the key to the alignment */
     .demo-card {
-        padding: 0.75rem; /* Less padding inside the smaller card */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-
-    .work-title { font-size: 1rem; }
-    .project-description { font-size: 0.6rem; margin-bottom: 0.5rem;}
-    .play-button-v2 { width: 40px; height: 40px; }
-    /* ========================================== */
-
+    
+    .work-title { font-size: 1rem; margin-bottom: 0.5rem; }
+    .project-description { font-size: 0.7rem; }
+    .play-button-v2 { width: 45px; height: 45px; }
     .swiper-button-next::after, .swiper-button-prev::after {
         font-size: 1.5rem !important;
     }
+    /* ========================================== */
 
     .hire-me-buttons {
         flex-direction: row;
