@@ -521,44 +521,49 @@ textarea { resize: none; height: 90px; }
 /* ========================================================================= */
 @media (max-width: 820px) {
 
-    /* CHANGE #3: Set popup window to a 5:4 aspect ratio with space above/below. */
     .wall-panel {
         width: 95vw;
-        height: calc(95vw * 0.8); /* This enforces a 5:4 aspect ratio (width * 4/5) */
-        max-height: 80vh; /* Failsafe for very tall/narrow screens */
+        height: calc(95vw * 0.8);
+        max-height: 80vh;
         padding: 15px;
     }
     
     .popup-content-wrapper {
-        overflow: auto; /* Allow content inside the smaller popup to scroll */
+        overflow: auto;
     }
 
+    /* CHANGE: Final portfolio popup layout tweaks */
+    .swiper-container {
+        padding-top: 25px; /* Less padding on top */
+        padding-bottom: 25px;
+    }
     .swiper-slide {
-        width: 75vw;   /* Make slides take up more of the screen width */
-        height: 75vw;
+        width: 65vw; /* Smaller slides */
+        height: 65vw;
+    }
+    .swiper-button-next::after, .swiper-button-prev::after {
+        font-size: 1.5rem !important; /* Smaller arrows inside popup */
     }
 
-    /* CHANGE #4: Fix "Hire Me" button layout. */
     .hire-me-buttons {
-        flex-direction: row; /* Ensure they stay in a row */
-        gap: 15px; /* Reduce the gap to make them fit */
-        flex-wrap: nowrap; /* Prevent wrapping to a new line */
+        flex-direction: row;
+        gap: 15px;
+        flex-wrap: nowrap;
     }
 
     .hire-me-buttons .btn {
-        font-size: 0.8rem; /* Smaller font */
-        padding: 10px 12px; /* Smaller padding */
-        white-space: nowrap; /* Prevent text inside button from wrapping */
+        font-size: 0.8rem;
+        padding: 10px 12px;
+        white-space: nowrap;
     }
     
-    /* CHANGE #5: Prevent auto-zoom on form inputs by setting a safe font-size. */
     .form-page input, .form-page textarea {
         font-size: 16px;
     }
 
     /* General typography and spacing adjustments */
     h2 { font-size: 1.4rem; }
-    .work-title { font-size: 1.2rem; }
+    .work-title { font-size: 1.1rem; }
     .project-description, .review-details, .icon-label, label { font-size: 0.75rem; }
     .review-quote { font-size: 1.1rem; line-height: 1.5; }
     .review-quote::before { font-size: 2rem; }
