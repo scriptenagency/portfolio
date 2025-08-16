@@ -211,7 +211,7 @@ function initCarousel() {
     webglScene.add(initialButtonGroup, carouselUIGroup);
     carouselUIGroup.add(flatCarouselParent);
 
-    // CHANGE: Set initial scale immediately based on screen size for smooth load
+    // CHANGE: Set initial scale immediately for smooth load
     const initialScale = window.innerWidth < 768 ? 0.65 : 1.0;
     carouselUIGroup.scale.set(initialScale, initialScale, initialScale);
 
@@ -803,22 +803,31 @@ function initCarousel() {
         tl.to(initialButtonTextMesh.material, { opacity: 1, duration: 0.5 });
     }
 
+    // --- RESTORED ORIGINAL `rotateFlatCarousel` FUNCTION FOR SMOOTH ANIMATION ---
     function rotateFlatCarousel(direction) {
         if (isAnimating || currentPopupName) return;
         isAnimating = true; 
         resetInactivityTimer(); 
         hoveredIndex = -1;
-
+        
+        const oldIndex = currentIndex;
         currentIndex = (currentIndex + direction + numOptions) % numOptions;
         
         const rotationAngle = -(Math.PI * 2) / numOptions * direction;
         const rotationDuration = 1.2;
-        
+        const fadeDuration = 0.5;
+
         const tl = gsap.timeline({ onComplete: () => { isAnimating = false; } });
-        
+        tl.to(carouselElements[oldIndex].textMesh.material, { opacity: 0, duration: fadeDuration, ease: "power2.in" }, 0);
         tl.to(flatCarouselParent.rotation, { y: `+=${rotationAngle}`, duration: rotationDuration, ease: "power4.inOut" }, 0);
+        tl.add(() => {
+             updateCarouselOpacities(rotationDuration)
+        }, 0);
         
-        updateCarouselOpacities(rotationDuration);
+        const fadeInStartTime = rotationDuration - fadeDuration;
+        tl.to(carouselElements[currentIndex].textMesh.material, { opacity: 1.0, duration: fadeDuration, ease: "power2.out" }, fadeInStartTime);
+
+        // Update the active element scaling
         updateActiveElementScale(rotationDuration * 0.5);
     }
 
@@ -858,7 +867,6 @@ function initCarousel() {
             const intersects = raycaster.intersectObjects([leftArrow, rightArrow, ...carouselMeshes, activeElement.textMesh]);
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
-                // BUG FIX: Arrow directions are now intuitive.
                 if (clickedObject === leftArrow) rotateFlatCarousel(-1); 
                 else if (clickedObject === rightArrow) rotateFlatCarousel(1);
                 else if (clickedObject === activeElement.rectMesh || clickedObject === activeElement.textMesh) {
@@ -892,6 +900,7 @@ function initCarousel() {
     
     document.addEventListener('click', onCanvasClick);
     document.addEventListener('mousemove', onMouseMove);
+    // --- [REMOVED] Faulty swipe logic has been completely purged ---
     document.addEventListener('touchstart', (e) => {
         if (e.target.closest("#html-popup-overlay")) return;
         mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
