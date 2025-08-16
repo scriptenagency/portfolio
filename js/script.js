@@ -231,6 +231,8 @@ function initCarousel() {
     let popups = {};
     let initialButtonMesh, initialButtonTextMesh;
     let leftArrow, rightArrow;
+    // CHANGE: New variables for invisible arrow hitboxes
+    let leftArrowHitbox, rightArrowHitbox; 
     let carouselElements = [];
     let transitionRects = [];
     let hoveredIndex = -1; 
@@ -407,14 +409,23 @@ function initCarousel() {
         const arrowExtrudeSettings = { depth: 0.2, bevelEnabled: false };
         const arrowGeom = new THREE.ExtrudeGeometry(arrowShape, arrowExtrudeSettings);
         arrowGeom.center();
-
+        
+        // CHANGE: Move visible arrows slightly towards the center
         leftArrow = new THREE.Mesh(arrowGeom, neonArrowMaterial.clone());
         leftArrow.rotation.z = Math.PI;
-        leftArrow.position.x = -6;
+        leftArrow.position.x = -5.8; // Was -6
         rightArrow = new THREE.Mesh(arrowGeom, neonArrowMaterial.clone());
-        rightArrow.position.x = 6;
+        rightArrow.position.x = 5.8; // Was 6
+
+        // CHANGE: Create larger, invisible hitboxes for easier tapping
+        const hitboxGeom = new THREE.PlaneGeometry(3, 3);
+        const hitboxMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+        leftArrowHitbox = new THREE.Mesh(hitboxGeom, hitboxMat);
+        leftArrowHitbox.position.copy(leftArrow.position);
+        rightArrowHitbox = new THREE.Mesh(hitboxGeom, hitboxMat);
+        rightArrowHitbox.position.copy(rightArrow.position);
         
-        carouselUIGroup.add(leftArrow, rightArrow);
+        carouselUIGroup.add(leftArrow, rightArrow, leftArrowHitbox, rightArrowHitbox);
         carouselUIGroup.position.set(0, 0, 0);
         carouselUIGroup.visible = false;
 
@@ -743,7 +754,7 @@ function initCarousel() {
             return;
         }
 
-        const activeScale = 2.0;
+        const activeScale = 1.5; // CHANGE: Reduced from 2.0 to 1.5 (150%)
         const inactiveScale = 1.0;
         
         carouselElements.forEach((el, i) => {
@@ -803,7 +814,7 @@ function initCarousel() {
         tl.to(initialButtonTextMesh.material, { opacity: 1, duration: 0.5 });
     }
 
-    // --- RESTORED ORIGINAL `rotateFlatCarousel` FUNCTION FOR SMOOTH ANIMATION ---
+    // --- RESTORED `rotateFlatCarousel` for smooth, click-only animation ---
     function rotateFlatCarousel(direction) {
         if (isAnimating || currentPopupName) return;
         isAnimating = true; 
@@ -827,7 +838,6 @@ function initCarousel() {
         const fadeInStartTime = rotationDuration - fadeDuration;
         tl.to(carouselElements[currentIndex].textMesh.material, { opacity: 1.0, duration: fadeDuration, ease: "power2.out" }, fadeInStartTime);
 
-        // Update the active element scaling
         updateActiveElementScale(rotationDuration * 0.5);
     }
 
@@ -864,11 +874,12 @@ function initCarousel() {
             if (carouselElements.length === 0) return;
             const activeElement = carouselElements[currentIndex];
             const carouselMeshes = carouselElements.map(el => el.rectMesh);
-            const intersects = raycaster.intersectObjects([leftArrow, rightArrow, ...carouselMeshes, activeElement.textMesh]);
+            // CHANGE: Now checks hitboxes for arrows
+            const intersects = raycaster.intersectObjects([leftArrowHitbox, rightArrowHitbox, ...carouselMeshes, activeElement.textMesh]);
             if (intersects.length > 0) {
                 const clickedObject = intersects[0].object;
-                if (clickedObject === leftArrow) rotateFlatCarousel(-1); 
-                else if (clickedObject === rightArrow) rotateFlatCarousel(1);
+                if (clickedObject === leftArrowHitbox) rotateFlatCarousel(-1); 
+                else if (clickedObject === rightArrowHitbox) rotateFlatCarousel(1);
                 else if (clickedObject === activeElement.rectMesh || clickedObject === activeElement.textMesh) {
                     openPopup(carouselOptions[currentIndex]);
                 }
@@ -890,8 +901,8 @@ function initCarousel() {
         if (!isInitialState && !currentPopupName && !isAnimating) {
             const intersects = raycaster.intersectObjects(carouselElements.map(el => el.rectMesh));
             hoveredIndex = intersects.length > 0 ? carouselElements.findIndex(el => el.rectMesh === intersects[0].object) : -1;
-            const arrowIntersects = raycaster.intersectObjects([leftArrow, rightArrow]);
-            hoveredArrow = arrowIntersects.length > 0 ? arrowIntersects[0].object : null;
+            const arrowIntersects = raycaster.intersectObjects([leftArrowHitbox, rightArrowHitbox]);
+            hoveredArrow = arrowIntersects.length > 0 ? (arrowIntersects[0].object === leftArrowHitbox ? leftArrow : rightArrow) : null;
         } else {
             hoveredIndex = -1;
             hoveredArrow = null;
@@ -900,7 +911,6 @@ function initCarousel() {
     
     document.addEventListener('click', onCanvasClick);
     document.addEventListener('mousemove', onMouseMove);
-    // --- [REMOVED] Faulty swipe logic has been completely purged ---
     document.addEventListener('touchstart', (e) => {
         if (e.target.closest("#html-popup-overlay")) return;
         mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
